@@ -55,14 +55,14 @@ const LandingPage = () => {
               Discover AI-powered recommendations that enrich your life and accelerate your personal growth journey.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center">
+              <a href="/dashboard" className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center">
+                View Dashboard
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </a>
+              <a href="/onboarding" className="border border-gray-300 text-gray-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center">
                 Start Your Journey
                 <ArrowRight className="ml-2 h-5 w-5" />
-              </button>
-              <button className="border border-gray-300 text-gray-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center">
-                <Play className="mr-2 h-5 w-5" />
-                Watch Demo
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -107,9 +107,9 @@ const LandingPage = () => {
           <p className="text-xl text-blue-100 mb-8">
             Join thousands of users who are already experiencing meaningful growth with Clario.
           </p>
-          <button className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors">
+          <a href="/onboarding" className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors inline-block">
             Get Started Free
-          </button>
+          </a>
         </div>
       </div>
 
