@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Sparkles, Brain, Zap, Target, Trophy, Users, User, Star, ArrowUpRight, BookOpen, Flame, Target as TargetIcon, Check } from 'lucide-react';
 
-type Mood = 'energetic' | 'focused' | 'happy' | 'neutral' | 'low-energy' | 'reflective';
+type Mood = 'energetic' | 'focused' | 'happy' | 'neutral' | 'low-energy' | 'reflective' | 'sad' | 'depressed';
 
 // Define a type for the recommendation items to include completion status
 interface RecommendationItem {
@@ -30,6 +30,8 @@ const DashboardPage = () => {
     { id: 'happy' as Mood, label: 'Happy', emoji: '😊', icon: Sparkles },
     { id: 'neutral' as Mood, label: 'Neutral', emoji: '😐', icon: Brain },
     { id: 'low-energy' as Mood, label: 'Low Energy', emoji: '😴', icon: Brain },
+    { id: 'sad' as Mood, label: 'Sad', emoji: '😢', icon: Brain },
+    { id: 'depressed' as Mood, label: 'Depressed', emoji: '😞', icon: Brain },
     { id: 'reflective' as Mood, label: 'Reflective', emoji: '🌙', icon: Brain }
   ];
 
@@ -274,9 +276,96 @@ const DashboardPage = () => {
           growthImpact: 'Contemplative walking practice to deepen your reflective state.',
           color: 'green'
         }
+      ],
+      
+      sad: [
+        {
+          title: 'The Little Prince',
+          author: 'Antoine de Saint-Exupéry',
+          type: 'book',
+          score: 30, // Example score - adjust as you see fit
+          thumbnail: '🦊', // Example emoji
+          growthImpact: 'A gentle fable about loss, friendship, and finding meaning.',
+          color: 'blue' // Example color - adjust as you see fit
+        },
+        {
+          title: 'Whispers of the Soul',
+          author: 'Various',
+          type: 'playlist',
+          score: 20, // Example score
+          thumbnail: '🎧', // Example emoji
+          growthImpact: 'Comforting and introspective music to acknowledge and process sadness.',
+          color: 'indigo' // Example color
+        },
+        {
+          title: 'A Quote on Resilience',
+          author: 'Various',
+          type: 'quote',
+          score: 15, // Example score
+          thumbnail: '💬', // Example emoji
+          growthImpact: 'Find solace and strength in words of wisdom during difficult times.',
+          color: 'purple' // Example color
+        },
+        {
+          title: 'Simple Guided Meditation for Sadness',
+          author: 'Meditation Teacher',
+          type: 'audio',
+          score: 25, // Example score
+          thumbnail: '🧘‍♀️', // Example emoji
+          growthImpact: 'A gentle practice to help you sit with and release feelings of sadness.',
+          color: 'green' // Example color
+        }
+      ],
+      depressed: [
+        {
+          title: 'Darkness Visible: A Memoir of Madness',
+          author: 'William Styron',
+          type: 'book',
+          score: 35, // Example score
+          thumbnail: '📚', // Example emoji
+          growthImpact: 'A powerful and honest account of depression that can offer understanding and solidarity.',
+          color: 'blue' // Example color
+        },
+        {
+          title: 'The Song That Finds You',
+          author: 'Various',
+          type: 'playlist',
+          score: 20, // Example score
+          thumbnail: '🎵', // Example emoji
+          growthImpact: 'Uplifting and hopeful music to offer a sense of connection and light.',
+          color: 'green' // Example color
+        },
+        {
+          title: 'A Quote on Hope',
+          author: 'Various',
+          type: 'quote',
+          score: 15, // Example score
+          thumbnail: '✨', // Example emoji
+          growthImpact: 'Words to remind you of the possibility of brighter days.',
+          color: 'orange' // Example color
+        },
+        {
+          title: 'Gentle Movement for Mental Well-being',
+          author: 'Wellness Instructor',
+          type: 'video',
+          score: 25, // Example score
+          thumbnail: '🤸', // Example emoji
+          growthImpact: 'Simple physical activity to help improve mood and energy levels.',
+          color: 'pink' // Example color
+        }
       ]
+
     };
+    // Manually add recommendations for sad and depressed moods if not already present
+    if (!moodRecommendations.sad) {
+      moodRecommendations.sad = []; // Add your sad recommendations here
+    }
+    if (!moodRecommendations.depressed) {
+      moodRecommendations.depressed = []; // Add your depressed recommendations here
+    }
     return moodRecommendations[mood];
+
+
   };
 
   // State to track completed recommendations
@@ -307,7 +396,10 @@ const DashboardPage = () => {
       happy: { description: 'Feeling great today!', curation: 'Positive psychology, creativity, relationship building' },
       neutral: { description: 'Just going with the flow', curation: 'Balanced content, habit building, general growth topics' },
       'low-energy': { description: 'Taking it easy', curation: 'Gentle content, self-care, restorative activities' },
-      reflective: { description: 'Deep in thought', curation: 'Philosophy, mindfulness, introspective content' }
+      reflective: { description: 'Deep in thought', curation: 'Philosophy, mindfulness, introspective content' },
+      // Add the following lines:
+      sad: { description: 'Feeling a bit down', curation: 'Comforting content, emotional processing, gentle activities' },
+      depressed: { description: 'Struggling with low mood', curation: 'Supportive content, therapeutic resources, uplifting inspiration' },
     };
     return moodContent[mood];
   };
