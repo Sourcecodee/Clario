@@ -1,9 +1,27 @@
 import { useState } from 'react';
-import { Sparkles, Brain, Zap, Target, Trophy, Users, User, Star, ArrowUpRight, BookOpen, Flame, Target as TargetIcon } from 'lucide-react';
+import { Sparkles, Brain, Zap, Target, Trophy, Users, User, Star, ArrowUpRight, BookOpen, Flame, Target as TargetIcon, Check } from 'lucide-react';
 
 type Mood = 'energetic' | 'focused' | 'happy' | 'neutral' | 'low-energy' | 'reflective';
 
+// Define a type for the recommendation items to include completion status
+interface RecommendationItem {
+  title: string;
+  author: string;
+  type: string;
+  score: number;
+  thumbnail: string;
+  growthImpact: string;
+  color: string;
+  isCompleted?: boolean; // Add a property to track completion
+}
+
+// Define a type for the mood recommendations with the updated item type
+type MoodRecommendations = {
+  [key in Mood]: RecommendationItem[];
+};
+
 const DashboardPage = () => {
+  const [activeTab, setActiveTab] = useState('dashboard'); // State to manage active tab
   const [currentMood, setCurrentMood] = useState<Mood>('neutral');
 
   const moods = [
@@ -28,7 +46,7 @@ const DashboardPage = () => {
   ];
 
   const getRecommendations = (mood: Mood) => {
-    const moodRecommendations = {
+    const moodRecommendations: MoodRecommendations = {
       energetic: [
         {
           title: 'Atomic Habits',
@@ -261,6 +279,27 @@ const DashboardPage = () => {
     return moodRecommendations[mood];
   };
 
+  // State to track completed recommendations
+  const [completedRecommendations, setCompletedRecommendations] = useState<Set<string>>(new Set());
+
+  // Function to handle marking a recommendation as done
+  const handleMarkDone = (itemTitle: string) => {
+    setCompletedRecommendations(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(itemTitle)) {
+        newSet.delete(itemTitle);
+      } else {
+        newSet.add(itemTitle);
+      }
+      return newSet;
+    });
+  };
+
+  // Function to check if a recommendation is completed
+  const isCompleted = (itemTitle: string) => {
+    return completedRecommendations.has(itemTitle);
+  };
+
   const getMoodContent = (mood: Mood) => {
     const moodContent = {
       energetic: { description: 'Just going with the flow', curation: 'Balanced content, habit building, general growth topics' },
@@ -273,10 +312,10 @@ const DashboardPage = () => {
     return moodContent[mood];
   };
 
-  return (
+ return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+ <header className="bg-white shadow-sm border-b border-gray-300">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
@@ -292,19 +331,40 @@ const DashboardPage = () => {
               </div>
             </div>
             
+            {/* Navigation Tabs */}
             <nav className="flex items-center space-x-6">
-              <a href="#" className="flex items-center space-x-2 text-purple-600 font-medium">
+ <button
+                type="button"
+                onClick={() => setActiveTab('dashboard')}
+ className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors border ${activeTab === 'dashboard' ? 'bg-purple-100 text-purple-700 font-medium border-purple-400' : 'border-transparent text-gray-600 hover:text-purple-600 hover:bg-gray-100 hover:border-gray-300'}`}
+              >
                 <Target className="w-4 h-4" />
                 <span>Dashboard</span>
-              </a>
-              <a href="#" className="flex items-center space-x-2 text-gray-600 hover:text-purple-600">
+              </button>
+ <button
+                type="button"
+                onClick={() => setActiveTab('community')}
+ className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors border ${activeTab === 'community' ? 'bg-purple-100 text-purple-700 font-medium border-purple-400' : 'border-transparent text-gray-600 hover:text-purple-600 hover:bg-gray-100 hover:border-gray-300'}`}
+              >
                 <Users className="w-4 h-4" />
                 <span>Community</span>
-              </a>
-              <a href="#" className="flex items-center space-x-2 text-gray-600 hover:text-purple-600">
+              </button>
+ <button
+                type="button"
+                onClick={() => setActiveTab('profile')}
+ className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors border ${activeTab === 'profile' ? 'bg-purple-100 text-purple-700 font-medium border-purple-400' : 'border-transparent text-gray-600 hover:text-purple-600 hover:bg-gray-100 hover:border-gray-300'}`}
+              >
                 <User className="w-4 h-4" />
                 <span>Profile</span>
-              </a>
+              </button>
+            </nav>
+
+            {/* Mobile Menu Button (Optional, can add later) */}
+            <nav className="flex items-center space-x-6 lg:hidden">
+              {/* Add a button here for a mobile menu if needed */}
+              <button className="text-gray-600 hover:text-purple-600 focus:outline-none">
+                {/* Icon for mobile menu (e.g., Menu icon from lucide-react) */}
+              </button>
             </nav>
           </div>
         </div>
@@ -312,243 +372,256 @@ const DashboardPage = () => {
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-3 space-y-8">
-            {/* Welcome Section */}
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2 flex items-center">
-                Good morning! Your Growth Feed
-                <Sparkles className="w-6 h-6 ml-2 text-purple-500" />
-              </h2>
-              <p className="text-gray-600 mb-4">
-                Focusing on: 
-                <span className="inline-flex items-center ml-2 space-x-2">
-                  <span className="flex items-center text-purple-600">
-                    <Brain className="w-4 h-4 mr-1" />
-                    Creativity
-                  </span>
-                  <span className="flex items-center text-blue-600">
-                    <Zap className="w-4 h-4 mr-1" />
-                    Productivity
-                  </span>
-                  <span className="flex items-center text-indigo-600">
-                    <Brain className="w-4 h-4 mr-1" />
-                    Wisdom
-                  </span>
-                </span>
-              </p>
-            </div>
+          {/* Conditional Rendering based on activeTab */}
+          {activeTab === 'dashboard' && (
+            <>
+              {/* Dashboard Main Content */}
+              <div className="lg:col-span-3 space-y-8 flex flex-col items-center">
+                {/* Welcome Section */}
+                {/* Reconstructed Welcome Section for correct tag structure */}
+                <div className="text-center">
+ <h2 className="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center">
+                    Good morning! Your Growth Feed
+                    <Sparkles className="w-6 h-6 ml-2 text-purple-500" />
+                  </h2>
 
-            {/* Mood Selection Card */}
-            <div className="bg-white rounded-xl shadow-sm border p-6">
-                             <div className="flex items-center justify-between mb-4">
-                 <h3 className="text-xl font-semibold text-gray-900 flex items-center">
-                   How are you feeling today?
-                   <Sparkles className="w-5 h-5 ml-2 text-purple-500" />
-                   <span className="ml-2">{moods.find(m => m.id === currentMood)?.emoji}</span>
-                 </h3>
-               </div>
-              
-              <div className="mb-4">
-                <p className="text-gray-600 mb-2">
-                  <strong>Current Mood:</strong> {getMoodContent(currentMood).description}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Content curated for this mood: {getMoodContent(currentMood).curation}
-                </p>
-              </div>
+                  <p className="text-gray-600 mb-4">
+                    Focusing on: 
+                    <span className="inline-flex items-center ml-2 space-x-2">
+                      <span className="flex items-center text-purple-600">
+                        <Brain className="w-4 h-4 mr-1" />
+                        Creativity
+                      </span>
+                      <span className="flex items-center text-blue-600">
+                        <Zap className="w-4 h-4 mr-1" />
+                        Productivity
+                      </span>
+                      <span className="flex items-center text-indigo-600">
+                        <Brain className="w-4 h-4 mr-1" />
+                        Wisdom
+                      </span>
+                    </span>
+                  </p>
+                </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
-                {moods.map((mood) => (
-                  <button
-                    key={mood.id}
-                    onClick={() => setCurrentMood(mood.id)}
-                    className={`
-                      p-3 rounded-lg border-2 transition-all duration-200 flex flex-col items-center space-y-1
-                      ${currentMood === mood.id
-                        ? 'border-purple-500 bg-purple-50 text-purple-700'
-                        : 'border-gray-200 hover:border-purple-300 hover:bg-purple-50'
-                      }
-                    `}
-                  >
-                    <span className="text-2xl">{mood.emoji}</span>
-                    <span className="text-sm font-medium">{mood.label}</span>
-                  </button>
-                ))}
-              </div>
+                {/* Mood Selection Card */}
+ <div className="bg-white rounded-xl shadow-sm border border-gray-300 p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xl font-semibold text-gray-900 flex items-center">
+                      How are you feeling today?
+                      <Sparkles className="w-5 h-5 ml-2 text-purple-500" />
+                      <span className="ml-2">{moods.find(m => m.id === currentMood)?.emoji}</span>
+                    </h3>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <p className="text-gray-600 mb-2">
+                      <strong>Current Mood:</strong> {getMoodContent(currentMood).description}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Content curated for this mood: {getMoodContent(currentMood).curation}
+                    </p>
+                  </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <p className="text-sm text-blue-800">
-                  💡 <strong>Tip:</strong> Your mood helps us recommend content that matches your current energy and mindset. Try switching moods to see different recommendations!
-                </p>
-              </div>
-            </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
+                    {moods.map((mood) => (
+                      <button
+                        key={mood.id}
+                        onClick={() => setCurrentMood(mood.id)}
+                        className={`
+                          p-3 rounded-lg border-2 transition-all duration-200 flex flex-col items-center space-y-1
+                          ${currentMood === mood.id
+                            ? 'border-purple-500 bg-purple-50 text-purple-700'
+ : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50'
+ }
+                        `}
+                      >
+                        <span className="text-2xl">{mood.emoji}</span>
+                        <span className="text-sm font-medium">{mood.label}</span>
+                      </button>
+                    ))}
+                  </div>
 
-            {/* Recommendations Section */}
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-                Recommended for You
-                <Sparkles className="w-5 h-5 ml-2 text-purple-500" />
-              </h3>
-                             <p className="text-gray-600 mb-6">
-                 Curated for <span className="inline-flex items-center">{moods.find(m => m.id === currentMood)?.emoji} {moods.find(m => m.id === currentMood)?.label} mood</span>
-               </p>
+                  <div className="bg-blue-50 border border-blue-300 rounded-lg p-3">
+                    <p className="text-sm text-blue-800">
+                      💡 <strong>Tip:</strong> Your mood helps us recommend content that matches your current energy and mindset. Try switching moods to see different recommendations!
+                    </p>
+                  </div>
+                </div>
 
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 {getRecommendations(currentMood).map((item, index) => (
-                  <div key={index} className="bg-white rounded-xl shadow-sm border overflow-hidden">
-                    <div className="p-6">
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="flex items-center space-x-3">
-                          <div className="text-3xl">{item.thumbnail}</div>
-                          <div>
-                            <div className="flex items-center space-x-2">
-                                                             <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                                 item.color === 'blue' ? 'bg-blue-100 text-blue-800' : 
-                                 item.color === 'orange' ? 'bg-orange-100 text-orange-800' :
-                                 item.color === 'green' ? 'bg-green-100 text-green-800' :
-                                 item.color === 'purple' ? 'bg-purple-100 text-purple-800' :
-                                 item.color === 'indigo' ? 'bg-indigo-100 text-indigo-800' :
-                                 item.color === 'pink' ? 'bg-pink-100 text-pink-800' :
-                                 'bg-gray-100 text-gray-800'
-                               }`}>
-                                <Sparkles className="w-3 h-3 mr-1" />
-                                {item.score}
-                              </span>
-                              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                                {item.type}
-                              </span>
+                {/* Recommendations Section */}
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                    Recommended for You
+                    <Sparkles className="w-5 h-5 ml-2 text-purple-500" />
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    Curated for <span className="inline-flex items-center">{moods.find(m => m.id === currentMood)?.emoji} {moods.find(m => m.id === currentMood)?.label} mood</span>
+                  </p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {getRecommendations(currentMood).map((item, index) => (
+ <div key={index} className={`bg-white rounded-xl shadow-sm border border-gray-300 overflow-hidden ${isCompleted(item.title) ? 'opacity-75' : ''}`}>
+                        <div className="p-6">
+                          <div className="flex justify-between items-start mb-4">
+                            <div className="flex items-center space-x-3">
+                              <div className="text-3xl">{item.thumbnail}</div>
+                              <div>
+                                <div className="flex items-center space-x-2">
+                                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                    item.color === 'blue' ? 'bg-blue-100 text-blue-800' : 
+                                    item.color === 'orange' ? 'bg-orange-100 text-orange-800' :
+                                    item.color === 'green' ? 'bg-green-100 text-green-800' :
+                                    item.color === 'purple' ? 'bg-purple-100 text-purple-800' :
+                                    item.color === 'indigo' ? 'bg-indigo-100 text-indigo-800' :
+                                    item.color === 'pink' ? 'bg-pink-100 text-pink-800' :
+                                    'bg-gray-100 text-gray-800'
+                                  }`}>
+                                    <Sparkles className="w-3 h-3 mr-1" />
+                                    {item.score}
+                                  </span>
+                                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                    {item.type}
+                                  </span>
+                                </div>
+                                <h4 className="font-semibold text-gray-900 mt-1">{item.title}</h4>
+                                <p className="text-sm text-gray-600">{item.author}</p>
+                              </div>
                             </div>
-                            <h4 className="font-semibold text-gray-900 mt-1">{item.title}</h4>
-                            <p className="text-sm text-gray-600">{item.author}</p>
+                            <Star className="w-5 h-5 text-gray-400" />
+                          </div>
+
+ <div className={`p-3 rounded-lg mb-4 border-opacity-75 border ${
+                            item.color === 'blue' ? 'bg-blue-50 border-blue-400' :
+                            item.color === 'orange' ? 'bg-orange-50 border-orange-400' :
+                            item.color === 'green' ? 'bg-green-50 border-green-400' :
+                            item.color === 'purple' ? 'bg-purple-50 border-purple-400' :
+                            item.color === 'indigo' ? 'bg-indigo-50 border-indigo-400' :
+                            item.color === 'pink' ? 'bg-pink-50 border-pink-400' :
+                            'bg-gray-50 border-gray-400'
+ }`}>
+                            <div className="flex items-start space-x-2">
+                              <span className="text-yellow-500">💡</span>
+                              <p className="text-sm text-gray-700">
+                                <strong>Growth Impact:</strong> {item.growthImpact}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex space-x-3">
+                            <button className={`flex-1 flex items-center justify-center space-x-2 py-2 px-4 rounded-lg font-medium transition-colors ${item.color === 'blue' ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600' : item.color === 'orange' ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600' : item.color === 'green' ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600' : item.color === 'purple' ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white hover:from-purple-600 hover:to-violet-600' : item.color === 'indigo' ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white hover:from-indigo-600 hover:to-blue-600' : item.color === 'pink' ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:from-pink-600 hover:to-rose-600' : 'bg-gradient-to-r from-gray-500 to-slate-500 text-white hover:from-gray-600 hover:to-slate-600'}`}>
+                              <span className="flex items-center space-x-2"><span>Explore</span> <ArrowUpRight className="w-4 h-4" /></span>
+                            </button>
+                            <button
+                              className={`flex-1 py-2 px-4 border rounded-lg font-medium transition-colors ${isCompleted(item.title)
+                                ? 'border-green-500 text-green-700 bg-green-50 cursor-not-allowed'
+                                : 'border-gray-400 text-gray-700 hover:bg-gray-50'
+                              }`}
+                              onClick={() => handleMarkDone(item.title)}
+                              disabled={isCompleted(item.title)}
+                            >
+                              {isCompleted(item.title) ? <Check className="w-5 h-5 inline-block mr-1" /> : 'Mark Done'}
+                            </button>
                           </div>
                         </div>
-                        <Star className="w-5 h-5 text-gray-400" />
                       </div>
-
-                                             <div className={`p-3 rounded-lg mb-4 ${
-                         item.color === 'blue' ? 'bg-blue-50 border border-blue-200' : 
-                         item.color === 'orange' ? 'bg-orange-50 border border-orange-200' :
-                         item.color === 'green' ? 'bg-green-50 border border-green-200' :
-                         item.color === 'purple' ? 'bg-purple-50 border border-purple-200' :
-                         item.color === 'indigo' ? 'bg-indigo-50 border border-indigo-200' :
-                         item.color === 'pink' ? 'bg-pink-50 border border-pink-200' :
-                         'bg-gray-50 border border-gray-200'
-                       }`}>
-                        <div className="flex items-start space-x-2">
-                          <span className="text-yellow-500">💡</span>
-                          <p className="text-sm text-gray-700">
-                            <strong>Growth Impact:</strong> {item.growthImpact}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex space-x-3">
-                                                 <button className={`flex-1 flex items-center justify-center space-x-2 py-2 px-4 rounded-lg font-medium transition-colors ${
-                           item.color === 'blue' 
-                             ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600'
-                             : item.color === 'orange'
-                             ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600'
-                             : item.color === 'green'
-                             ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600'
-                             : item.color === 'purple'
-                             ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white hover:from-purple-600 hover:to-violet-600'
-                             : item.color === 'indigo'
-                             ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white hover:from-indigo-600 hover:to-blue-600'
-                             : item.color === 'pink'
-                             ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:from-pink-600 hover:to-rose-600'
-                             : 'bg-gradient-to-r from-gray-500 to-slate-500 text-white hover:from-gray-600 hover:to-slate-600'
-                         }`}>
-                          <span>Explore</span>
-                          <ArrowUpRight className="w-4 h-4" />
-                        </button>
-                        <button className="flex-1 py-2 px-4 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                          Mark Done
-                        </button>
-                      </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* This Week Card */}
-            <div className="bg-white rounded-xl shadow-sm border p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                This Week
-                <Trophy className="w-5 h-5 ml-2 text-purple-500" />
-              </h3>
-              
-              <div className="mb-4">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-gray-600">Progress</span>
-                  <span className="text-sm font-medium text-gray-900">180/200 pts</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-purple-500 h-2 rounded-full" style={{ width: '90%' }}></div>
-                </div>
+                </div> {/* End of Recommendations Section */}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">5</div>
-                  <div className="text-sm text-gray-600">Day Streak</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">12</div>
-                  <div className="text-sm text-gray-600">Completed</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Growth Areas Card */}
-            <div className="bg-white rounded-xl shadow-sm border p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                Growth Areas
-                <Target className="w-5 h-5 ml-2 text-purple-500" />
-              </h3>
-              
-              <div className="space-y-4">
-                {growthAreas.map((area, index) => (
-                  <div key={index}>
+              {/* Dashboard Sidebar */}
+              <div className="space-y-6">
+                {/* This Week Card */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-300 p-6">
+ <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    This Week
+                    <Trophy className="w-5 h-5 ml-2 text-purple-500" />
+                  </h3>
+                  
+                  <div className="mb-4">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-gray-900 flex items-center">
-                        <area.icon className={`w-4 h-4 mr-2 ${area.color.replace('bg-', 'text-')}`} />
-                        {area.name}
-                      </span>
-                      <span className="text-sm text-gray-600">{area.progress}%</span>
+                      <span className="text-sm text-gray-600">Progress</span>
+                      <span className="text-sm font-medium text-gray-900">180/200 pts</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className={`${area.color} h-2 rounded-full transition-all duration-300`} 
-                        style={{ width: `${area.progress}%` }}
-                      ></div>
+                      <div className="bg-purple-500 h-2 rounded-full" style={{ width: '90%' }}></div>
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
 
-            {/* Recent Achievements Card */}
-            <div className="bg-white rounded-xl shadow-sm border p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                Recent Achievements
-                <Trophy className="w-5 h-5 ml-2 text-purple-500" />
-              </h3>
-              
-              <div className="space-y-3">
-                {achievements.map((achievement, index) => (
-                  <div key={index} className="flex items-center space-x-3">
-                    <achievement.icon className={`w-5 h-5 ${achievement.color}`} />
-                    <span className="text-sm text-gray-700">{achievement.title}</span>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-600">5</div>
+                      <div className="text-sm text-gray-600">Day Streak</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">12</div>
+                      <div className="text-sm text-gray-600">Completed</div>
+                    </div>
                   </div>
-                ))}
+                </div>
+
+                {/* Growth Areas Card */}
+ <div className="bg-white rounded-xl shadow-sm border border-gray-300 p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    Growth Areas
+                    <Target className="w-5 h-5 ml-2 text-purple-500" />
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    {growthAreas.map((area, index) => (
+                      <div key={index}>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-medium text-gray-900 flex items-center">
+                            <area.icon className={`w-4 h-4 mr-2 ${area.color.replace('bg-', 'text-')}`} />
+                            {area.name}
+                          </span>
+                          <span className="text-sm text-gray-600">{area.progress}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className={`${area.color} h-2 rounded-full transition-all duration-300`} 
+                            style={{ width: `${area.progress}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Recent Achievements Card */}
+ <div className="bg-white rounded-xl shadow-sm border border-gray-300 p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    Recent Achievements
+                    <Trophy className="w-5 h-5 ml-2 text-purple-500" />
+                  </h3>
+                  
+                  <div className="space-y-3">
+                    {achievements.map((achievement, index) => (
+                      <div key={index} className="flex items-center space-x-3">
+                        <achievement.icon className={`w-5 h-5 ${achievement.color}`} />
+                        <span className="text-sm text-gray-700">{achievement.title}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
+            </>
+          )}
+
+          {/* Community Content */}
+          {activeTab === 'community' && (
+ <div className="lg:col-span-4 bg-white rounded-xl shadow-sm border border-gray-300 p-6 flex items-center justify-center h-96">
+              <p className="text-2xl font-semibold text-gray-700">Community Content Goes Here</p>
             </div>
-          </div>
+          )}
+
+          {/* Profile Content */}
+          {activeTab === 'profile' && (
+ <div className="lg:col-span-4 bg-white rounded-xl shadow-sm border border-gray-300 p-6 flex items-center justify-center h-96">
+              <p className="text-2xl font-semibold text-gray-700">Profile Content Goes Here</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
