@@ -1,14 +1,20 @@
 
+
+// OnboardingPage lets users select their growth categories for a personalized experience
 import { useNavigate } from 'react-router-dom';
 import type { GrowthCategory } from '../types';
 import { Sparkles, Brain, Target, Lightbulb, Zap, Heart, Rocket } from 'lucide-react';
 import { useGrowth } from '../contexts/GrowthContext';
 
 
+// Main onboarding component
 const OnboardingPage = () => {
+  // Access selected categories and setter from context
   const { selectedCategories, setSelectedCategories } = useGrowth();
+  // Navigation hook for routing
   const navigate = useNavigate();
 
+  // List of available growth categories for selection
   const growthCategories = [
     {
       id: 'productivity' as GrowthCategory,
@@ -61,6 +67,7 @@ const OnboardingPage = () => {
   ];
 
 
+  // Toggle selection of a growth category
   const toggleCategory = (category: GrowthCategory) => {
     if (selectedCategories.includes(category)) {
       setSelectedCategories(selectedCategories.filter(c => c !== category));
@@ -69,18 +76,20 @@ const OnboardingPage = () => {
     }
   };
 
+
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
+      {/* Header: Welcome and instructions */}
       <div className="text-center py-12 px-6">
         <div className="flex items-center justify-center space-x-2 mb-6">
+          {/* App logo and title */}
           <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
             <Brain className="w-5 h-5 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900">Welcome to Clario</h1>
           <Sparkles className="w-5 h-5 text-purple-500" />
         </div>
-        
+        {/* Subtitle and encouragement */}
         <div className="flex items-center justify-center space-x-2 text-gray-600 mb-8">
           <Rocket className="w-4 h-4 text-red-500" />
           <p className="text-lg">
@@ -90,7 +99,7 @@ const OnboardingPage = () => {
         </div>
       </div>
 
-      {/* Growth Categories Grid */}
+      {/* Growth Categories Grid: User can select multiple */}
       <div className="max-w-4xl mx-auto px-6 pb-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {growthCategories.map((category) => {
@@ -107,7 +116,7 @@ const OnboardingPage = () => {
                   }
                 `}
               >
-                {/* Checkbox */}
+                {/* Checkbox indicator for selection */}
                 <div className="absolute top-4 left-4">
                   <div className={`
                     w-5 h-5 rounded border-2 flex items-center justify-center
@@ -124,7 +133,7 @@ const OnboardingPage = () => {
                   </div>
                 </div>
 
-                {/* Category Icon */}
+                {/* Category icon, title, and description */}
                 <div className="flex items-center space-x-4 mb-4">
                   <div className={`w-12 h-12 ${category.iconColor} rounded-full flex items-center justify-center`}>
                     <category.icon className="w-6 h-6 text-white" />
@@ -147,7 +156,7 @@ const OnboardingPage = () => {
         </div>
       </div>
 
-      {/* Call to Action Button */}
+      {/* Call to Action Button: Go to dashboard */}
       <div className="text-center pb-12">
         <button 
           className={`

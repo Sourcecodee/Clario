@@ -1,6 +1,9 @@
+
+// DashboardPage is the main user hub for growth, mood, recommendations, and achievements
 import { useState, useEffect } from 'react';
 import { useGrowth } from '../contexts/GrowthContext';
 import { Sparkles, Brain, Zap, Target, Trophy, Users, User, Star, ArrowUpRight, BookOpen, Flame, Target as TargetIcon, Check } from 'lucide-react';
+import ProfilePage from './ProfilePage';
 
 type Mood = 'energetic' | 'focused' | 'happy' | 'neutral' | 'low-energy' | 'reflective' | 'sad' | 'depressed';
 
@@ -28,15 +31,19 @@ interface GrowthArea {
   color: string;
 }
 
+
 const DashboardPage = () => {
-  const [activeTab, setActiveTab] = useState('dashboard'); // State to manage active tab
+  // State for active tab (dashboard, community, profile)
+  const [activeTab, setActiveTab] = useState('dashboard');
+  // State for current mood selection
   const [currentMood, setCurrentMood] = useState<Mood>('neutral');
+  // State for greeting message
   const [greeting, setGreeting] = useState('');
 
-  // Use selected categories from context
+  // Get selected growth categories from context
   const { selectedCategories } = useGrowth();
 
-  // Map GrowthCategory to display info
+  // Map growth category keys to display info (icon, color, name)
   const categoryMap: Record<string, { name: string; icon: React.ElementType; color: string }> = {
     productivity: { name: 'Productivity', icon: Zap, color: 'text-blue-600' },
     creativity: { name: 'Creativity', icon: Brain, color: 'text-purple-600' },
@@ -48,6 +55,7 @@ const DashboardPage = () => {
     health: { name: 'Health', icon: Brain, color: 'text-red-600' },
   };
 
+  // Dynamically build growth areas from selected categories, or show defaults
   const growthAreas = selectedCategories.length > 0
     ? selectedCategories.map(cat => ({
         name: categoryMap[cat]?.name || cat,
@@ -61,6 +69,7 @@ const DashboardPage = () => {
         { name: 'Wisdom', icon: Brain, progress: 30, color: 'text-indigo-600' },
       ];
 
+  // List of moods for user to select
   const moods = [
     { id: 'energetic' as Mood, label: 'Energetic', emoji: '⚡', icon: Zap },
     { id: 'focused' as Mood, label: 'Focused', emoji: '☕', icon: Target },
@@ -72,7 +81,9 @@ const DashboardPage = () => {
     { id: 'reflective' as Mood, label: 'Reflective', emoji: '🌙', icon: Brain }
   ];
 
+  // Get recommendations based on current mood
   const getRecommendations = (mood: Mood) => {
+    // Demo recommendations for each mood
     const moodRecommendations: MoodRecommendations = {
       energetic: [
         {
@@ -393,10 +404,10 @@ const DashboardPage = () => {
 
   };
 
-  // State to track completed recommendations
+  // State to track completed recommendations (for toggling 'Mark Done')
   const [completedRecommendations, setCompletedRecommendations] = useState<Set<string>>(new Set());
 
-  // Function to handle marking a recommendation as done
+  // Toggle completion state for a recommendation
   const handleMarkDone = (itemTitle: string) => {
     setCompletedRecommendations(prev => {
       const newSet = new Set(prev);
@@ -409,11 +420,12 @@ const DashboardPage = () => {
     });
   };
 
-  // Function to check if a recommendation is completed
+  // Check if a recommendation is completed
   const isCompleted = (itemTitle: string) => {
     return completedRecommendations.has(itemTitle);
   };
 
+  // Get description and curation for each mood
   const getMoodContent = (mood: Mood) => {
     const moodContent = {
       energetic: { description: 'Just going with the flow', curation: 'Balanced content, habit building, general growth topics' },
@@ -429,11 +441,13 @@ const DashboardPage = () => {
     return moodContent[mood];
   };
 
+  // Demo achievements for sidebar
   const achievements = [
     { title: 'First Book Completed', icon: BookOpen, color: 'text-green-500' },
     { title: '5-Day Growth Streak', icon: Flame, color: 'text-orange-500' },
     { title: 'Focus Master', icon: TargetIcon, color: 'text-pink-500' }
   ];
+  // Set greeting based on time of day
   useEffect(() => {
     const updateGreeting = () => {
       const hour = new Date().getHours();
@@ -448,14 +462,17 @@ const DashboardPage = () => {
 
     updateGreeting();
 
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, []); // Only run on mount
 
- return (
+
+  // Render dashboard layout with header, tabs, and main content
+  return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
- <header className="bg-white shadow-sm border-b border-gray-300">
+      {/* Header: App title and navigation */}
+      <header className="bg-white shadow-sm border-b border-gray-300">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
+            {/* Logo and app name */}
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
                 <Brain className="w-6 h-6 text-white" />
@@ -468,36 +485,34 @@ const DashboardPage = () => {
                 </p>
               </div>
             </div>
-            
-            {/* Navigation Tabs */}
+            {/* Navigation Tabs: Dashboard, Community, Profile */}
             <nav className="flex items-center space-x-6">
- <button
+              <button
                 type="button"
                 onClick={() => setActiveTab('dashboard')}
- className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors border ${activeTab === 'dashboard' ? 'bg-purple-100 text-purple-700 font-medium border-purple-400' : 'border-transparent text-gray-600 hover:text-purple-600 hover:bg-gray-100 hover:border-gray-300'}`}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors border ${activeTab === 'dashboard' ? 'bg-purple-100 text-purple-700 font-medium border-purple-400' : 'border-transparent text-gray-600 hover:text-purple-600 hover:bg-gray-100 hover:border-gray-300'}`}
               >
                 <Target className="w-4 h-4" />
                 <span>Dashboard</span>
               </button>
- <button
+              <button
                 type="button"
                 onClick={() => setActiveTab('community')}
- className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors border ${activeTab === 'community' ? 'bg-purple-100 text-purple-700 font-medium border-purple-400' : 'border-transparent text-gray-600 hover:text-purple-600 hover:bg-gray-100 hover:border-gray-300'}`}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors border ${activeTab === 'community' ? 'bg-purple-100 text-purple-700 font-medium border-purple-400' : 'border-transparent text-gray-600 hover:text-purple-600 hover:bg-gray-100 hover:border-gray-300'}`}
               >
                 <Users className="w-4 h-4" />
                 <span>Community</span>
               </button>
- <button
+              <button
                 type="button"
                 onClick={() => setActiveTab('profile')}
- className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors border ${activeTab === 'profile' ? 'bg-purple-100 text-purple-700 font-medium border-purple-400' : 'border-transparent text-gray-600 hover:text-purple-600 hover:bg-gray-100 hover:border-gray-300'}`}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors border ${activeTab === 'profile' ? 'bg-purple-100 text-purple-700 font-medium border-purple-400' : 'border-transparent text-gray-600 hover:text-purple-600 hover:bg-gray-100 hover:border-gray-300'}`}
               >
                 <User className="w-4 h-4" />
                 <span>Profile</span>
               </button>
             </nav>
-
-            {/* Mobile Menu Button (Optional, can add later) */}
+            {/* Mobile menu button (optional) */}
             <nav className="flex items-center space-x-6 lg:hidden">
               {/* Add a button here for a mobile menu if needed */}
               <button className="text-gray-600 hover:text-purple-600 focus:outline-none">
@@ -508,21 +523,20 @@ const DashboardPage = () => {
         </div>
       </header>
 
+      {/* Main content grid: Responsive for desktop/tablet/mobile */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Conditional Rendering based on activeTab */}
+          {/* Dashboard Tab Content */}
           {activeTab === 'dashboard' && (
             <>
-              {/* Dashboard Main Content */}
+              {/* Main dashboard area: Welcome, mood, recommendations */}
               <div className="lg:col-span-3 space-y-8 flex flex-col items-center">
-                {/* Welcome Section */}
-                {/* Reconstructed Welcome Section for correct tag structure */}
+                {/* Welcome section with greeting and focus areas */}
                 <div className="text-center">
- <h2 className="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center">
- {greeting}! Your Growth Feed
+                  <h2 className="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center">
+                    {greeting}! Your Growth Feed
                     <Sparkles className="w-6 h-6 ml-2 text-purple-500" />
                   </h2>
-
                   <p className="text-gray-600 mb-4">
                     Focusing on:
                     <span className="inline-flex items-center ml-2 space-x-2">
@@ -530,14 +544,14 @@ const DashboardPage = () => {
                         <span key={index} className={`flex items-center ${area.color}`}>
                           <area.icon className="w-4 h-4 mr-1" />
                           {area.name}
-                      </span>
+                        </span>
                       ))}
                     </span>
                   </p>
                 </div>
 
-                {/* Mood Selection Card */}
- <div className="bg-white rounded-xl shadow-sm border border-gray-300 p-6">
+                {/* Mood selection card: User picks current mood */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-300 p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xl font-semibold text-gray-900 flex items-center">
                       How are you feeling today?
@@ -545,7 +559,6 @@ const DashboardPage = () => {
                       <span className="ml-2">{moods.find(m => m.id === currentMood)?.emoji}</span>
                     </h3>
                   </div>
-                  
                   <div className="mb-4">
                     <p className="text-gray-600 mb-2">
                       <strong>Current Mood:</strong> {getMoodContent(currentMood).description}
@@ -554,7 +567,7 @@ const DashboardPage = () => {
                       Content curated for this mood: {getMoodContent(currentMood).curation}
                     </p>
                   </div>
-
+                  {/* Mood buttons grid */}
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
                     {moods.map((mood) => (
                       <button
@@ -564,8 +577,8 @@ const DashboardPage = () => {
                           p-3 rounded-lg border-2 transition-all duration-200 flex flex-col items-center space-y-1
                           ${currentMood === mood.id
                             ? 'border-purple-500 bg-purple-50 text-purple-700'
- : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50'
- }
+                            : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50'
+                          }
                         `}
                       >
                         <span className="text-2xl">{mood.emoji}</span>
@@ -573,7 +586,7 @@ const DashboardPage = () => {
                       </button>
                     ))}
                   </div>
-
+                  {/* Mood tip */}
                   <div className="bg-blue-50 border border-blue-300 rounded-lg p-3">
                     <p className="text-sm text-blue-800">
                       💡 <strong>Tip:</strong> Your mood helps us recommend content that matches your current energy and mindset. Try switching moods to see different recommendations!
@@ -581,7 +594,7 @@ const DashboardPage = () => {
                   </div>
                 </div>
 
-                {/* Recommendations Section */}
+                {/* Recommendations section: List of recommended content */}
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                     Recommended for You
@@ -590,10 +603,9 @@ const DashboardPage = () => {
                   <p className="text-gray-600 mb-6">
                     Curated for <span className="inline-flex items-center">{moods.find(m => m.id === currentMood)?.emoji} {moods.find(m => m.id === currentMood)?.label} mood</span>
                   </p>
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {getRecommendations(currentMood).map((item, index) => (
- <div key={index} className={`bg-white rounded-xl shadow-sm border border-gray-300 overflow-hidden ${isCompleted(item.title) ? 'opacity-75' : ''}`}>
+                      <div key={index} className={`bg-white rounded-xl shadow-sm border border-gray-300 overflow-hidden ${isCompleted(item.title) ? 'opacity-75' : ''}`}>
                         <div className="p-6">
                           <div className="flex justify-between items-start mb-4">
                             <div className="flex items-center space-x-3">
@@ -622,8 +634,8 @@ const DashboardPage = () => {
                             </div>
                             <Star className="w-5 h-5 text-gray-400" />
                           </div>
-
- <div className={`p-3 rounded-lg mb-4 border-opacity-75 border ${
+                          {/* Growth impact and mark done button */}
+                          <div className={`p-3 rounded-lg mb-4 border-opacity-75 border ${
                             item.color === 'blue' ? 'bg-blue-50 border-blue-400' :
                             item.color === 'orange' ? 'bg-orange-50 border-orange-400' :
                             item.color === 'green' ? 'bg-green-50 border-green-400' :
@@ -631,7 +643,7 @@ const DashboardPage = () => {
                             item.color === 'indigo' ? 'bg-indigo-50 border-indigo-400' :
                             item.color === 'pink' ? 'bg-pink-50 border-pink-400' :
                             'bg-gray-50 border-gray-400'
- }`}>
+                          }`}>
                             <div className="flex items-start space-x-2">
                               <span className="text-yellow-500">💡</span>
                               <p className="text-sm text-gray-700">
@@ -639,7 +651,6 @@ const DashboardPage = () => {
                               </p>
                             </div>
                           </div>
-
                           <div className="flex space-x-3">
                             <button className={`flex-1 flex items-center justify-center space-x-2 py-2 px-4 rounded-lg font-medium transition-colors ${item.color === 'blue' ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600' : item.color === 'orange' ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600' : item.color === 'green' ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600' : item.color === 'purple' ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white hover:from-purple-600 hover:to-violet-600' : item.color === 'indigo' ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white hover:from-indigo-600 hover:to-blue-600' : item.color === 'pink' ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:from-pink-600 hover:to-rose-600' : 'bg-gradient-to-r from-gray-500 to-slate-500 text-white hover:from-gray-600 hover:to-slate-600'}`}>
                               <span className="flex items-center space-x-2"><span>Explore</span> <ArrowUpRight className="w-4 h-4" /></span>
@@ -660,18 +671,17 @@ const DashboardPage = () => {
                       </div>
                     ))}
                   </div>
-                </div> {/* End of Recommendations Section */}
+                </div>
               </div>
 
-              {/* Dashboard Sidebar */}
+              {/* Sidebar: This week, growth areas, achievements */}
               <div className="space-y-6">
-                {/* This Week Card */}
+                {/* This Week Card: Progress and streaks */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-300 p-6">
- <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                     This Week
                     <Trophy className="w-5 h-5 ml-2 text-purple-500" />
                   </h3>
-                  
                   <div className="mb-4">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm text-gray-600">Progress</span>
@@ -681,7 +691,6 @@ const DashboardPage = () => {
                       <div className="bg-purple-500 h-2 rounded-full" style={{ width: '90%' }}></div>
                     </div>
                   </div>
-
                   <div className="grid grid-cols-2 gap-4">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-purple-600">5</div>
@@ -693,14 +702,12 @@ const DashboardPage = () => {
                     </div>
                   </div>
                 </div>
-
-                {/* Growth Areas Card */}
- <div className="bg-white rounded-xl shadow-sm border border-gray-300 p-6">
+                {/* Growth Areas Card: Progress bars for each area */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-300 p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                     Growth Areas
                     <Target className="w-5 h-5 ml-2 text-purple-500" />
                   </h3>
-                  
                   <div className="space-y-4">
                     {growthAreas.map((area, index) => (
                       <div key={index}>
@@ -721,14 +728,12 @@ const DashboardPage = () => {
                     ))}
                   </div>
                 </div>
-
-                {/* Recent Achievements Card */}
- <div className="bg-white rounded-xl shadow-sm border border-gray-300 p-6">
+                {/* Recent Achievements Card: List of recent badges */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-300 p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                     Recent Achievements
                     <Trophy className="w-5 h-5 ml-2 text-purple-500" />
                   </h3>
-                  
                   <div className="space-y-3">
                     {achievements.map((achievement, index) => (
                       <div key={index} className="flex items-center space-x-3">
@@ -741,18 +746,16 @@ const DashboardPage = () => {
               </div>
             </>
           )}
-
-          {/* Community Content */}
+          {/* Community Tab Content (placeholder) */}
           {activeTab === 'community' && (
- <div className="lg:col-span-4 bg-white rounded-xl shadow-sm border border-gray-300 p-6 flex items-center justify-center h-96">
+            <div className="lg:col-span-4 bg-white rounded-xl shadow-sm border border-gray-300 p-6 flex items-center justify-center h-96">
               <p className="text-2xl font-semibold text-gray-700">Community Content Goes Here</p>
             </div>
           )}
-
-          {/* Profile Content */}
+          {/* Profile Tab Content: Show ProfilePage */}
           {activeTab === 'profile' && (
- <div className="lg:col-span-4 bg-white rounded-xl shadow-sm border border-gray-300 p-6 flex items-center justify-center h-96">
-              <p className="text-2xl font-semibold text-gray-700">Profile Content Goes Here</p>
+            <div className="lg:col-span-4">
+              <ProfilePage />
             </div>
           )}
         </div>
