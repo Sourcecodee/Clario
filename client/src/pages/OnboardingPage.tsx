@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { Sparkles, Brain, Target, Lightbulb, Zap, Heart, Rocket } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
 
 type GrowthCategory = 'productivity' | 'creativity' | 'discipline' | 'resilience' | 'focus' | 'empathy' | 'leadership' | 'health';
 
 const OnboardingPage = () => {
   const [selectedCategories, setSelectedCategories] = useState<GrowthCategory[]>([]);
+
+  const navigate = useNavigate();
 
   const growthCategories = [
     {
@@ -153,6 +157,7 @@ const OnboardingPage = () => {
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }
           `}
+          onClick={() => navigate('/dashboard')}
           disabled={selectedCategories.length === 0}
         >
           <Rocket className="w-5 h-5 mr-2 text-white" />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sparkles, Brain, Zap, Target, Trophy, Users, User, Star, ArrowUpRight, BookOpen, Flame, Target as TargetIcon, Check } from 'lucide-react';
 
 type Mood = 'energetic' | 'focused' | 'happy' | 'neutral' | 'low-energy' | 'reflective' | 'sad' | 'depressed';
@@ -20,9 +20,23 @@ type MoodRecommendations = {
   [key in Mood]: RecommendationItem[];
 };
 
+interface GrowthArea {
+  name: string;
+  icon: React.ElementType;
+  progress: number;
+  color: string;
+}
+
 const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState('dashboard'); // State to manage active tab
   const [currentMood, setCurrentMood] = useState<Mood>('neutral');
+  const [greeting, setGreeting] = useState('');
+  // State to hold the selected growth areas
+  const [growthAreas, setGrowthAreas] = useState<GrowthArea[]>([
+    { name: 'Creativity', icon: Brain, progress: 60, color: 'text-purple-600' },
+    { name: 'Productivity', icon: Zap, progress: 75, color: 'text-blue-600' },
+    { name: 'Wisdom', icon: Brain, progress: 30, color: 'text-indigo-600' },
+  ]);
 
   const moods = [
     { id: 'energetic' as Mood, label: 'Energetic', emoji: '⚡', icon: Zap },
@@ -33,18 +47,6 @@ const DashboardPage = () => {
     { id: 'sad' as Mood, label: 'Sad', emoji: '😢', icon: Brain },
     { id: 'depressed' as Mood, label: 'Depressed', emoji: '😞', icon: Brain },
     { id: 'reflective' as Mood, label: 'Reflective', emoji: '🌙', icon: Brain }
-  ];
-
-  const growthAreas = [
-    { name: 'Creativity', icon: Brain, progress: 60, color: 'bg-purple-500' },
-    { name: 'Productivity', icon: Zap, progress: 75, color: 'bg-blue-500' },
-    { name: 'Wisdom', icon: Brain, progress: 30, color: 'bg-indigo-500' }
-  ];
-
-  const achievements = [
-    { title: 'First Book Completed', icon: BookOpen, color: 'text-green-500' },
-    { title: '5-Day Growth Streak', icon: Flame, color: 'text-orange-500' },
-    { title: 'Focus Master', icon: TargetIcon, color: 'text-pink-500' }
   ];
 
   const getRecommendations = (mood: Mood) => {
@@ -404,6 +406,27 @@ const DashboardPage = () => {
     return moodContent[mood];
   };
 
+  const achievements = [
+    { title: 'First Book Completed', icon: BookOpen, color: 'text-green-500' },
+    { title: '5-Day Growth Streak', icon: Flame, color: 'text-orange-500' },
+    { title: 'Focus Master', icon: TargetIcon, color: 'text-pink-500' }
+  ];
+  useEffect(() => {
+    const updateGreeting = () => {
+      const hour = new Date().getHours();
+      if (hour < 12) {
+        setGreeting('Good morning');
+      } else if (hour < 18) {
+        setGreeting('Good afternoon');
+      } else {
+        setGreeting('Good evening');
+      }
+    };
+
+    updateGreeting();
+
+  }, []); // Empty dependency array ensures this runs only once on mount
+
  return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -473,25 +496,19 @@ const DashboardPage = () => {
                 {/* Reconstructed Welcome Section for correct tag structure */}
                 <div className="text-center">
  <h2 className="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center">
-                    Good morning! Your Growth Feed
+ {greeting}! Your Growth Feed
                     <Sparkles className="w-6 h-6 ml-2 text-purple-500" />
                   </h2>
 
                   <p className="text-gray-600 mb-4">
-                    Focusing on: 
+                    Focusing on:
                     <span className="inline-flex items-center ml-2 space-x-2">
-                      <span className="flex items-center text-purple-600">
-                        <Brain className="w-4 h-4 mr-1" />
-                        Creativity
+                      {growthAreas.map((area, index) => (
+                        <span key={index} className={`flex items-center ${area.color}`}>
+                          <area.icon className="w-4 h-4 mr-1" />
+                          {area.name}
                       </span>
-                      <span className="flex items-center text-blue-600">
-                        <Zap className="w-4 h-4 mr-1" />
-                        Productivity
-                      </span>
-                      <span className="flex items-center text-indigo-600">
-                        <Brain className="w-4 h-4 mr-1" />
-                        Wisdom
-                      </span>
+                      ))}
                     </span>
                   </p>
                 </div>
@@ -691,7 +708,7 @@ const DashboardPage = () => {
                   <div className="space-y-3">
                     {achievements.map((achievement, index) => (
                       <div key={index} className="flex items-center space-x-3">
-                        <achievement.icon className={`w-5 h-5 ${achievement.color}`} />
+                        {/* <achievement.icon className={`w-5 h-5 ${achievement.color}`} /> */}
                         <span className="text-sm text-gray-700">{achievement.title}</span>
                       </div>
                     ))}
