@@ -1,13 +1,12 @@
-import { useState } from 'react';
-import { Sparkles, Brain, Target, Lightbulb, Zap, Heart, Rocket } from 'lucide-react';
+
 import { useNavigate } from 'react-router-dom';
+import type { GrowthCategory } from '../types';
+import { Sparkles, Brain, Target, Lightbulb, Zap, Heart, Rocket } from 'lucide-react';
+import { useGrowth } from '../contexts/GrowthContext';
 
-
-type GrowthCategory = 'productivity' | 'creativity' | 'discipline' | 'resilience' | 'focus' | 'empathy' | 'leadership' | 'health';
 
 const OnboardingPage = () => {
-  const [selectedCategories, setSelectedCategories] = useState<GrowthCategory[]>([]);
-
+  const { selectedCategories, setSelectedCategories } = useGrowth();
   const navigate = useNavigate();
 
   const growthCategories = [
@@ -61,12 +60,13 @@ const OnboardingPage = () => {
     }
   ];
 
+
   const toggleCategory = (category: GrowthCategory) => {
-    setSelectedCategories(prev => 
-      prev.includes(category) 
-        ? prev.filter(c => c !== category)
-        : [...prev, category]
-    );
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(selectedCategories.filter(c => c !== category));
+    } else {
+      setSelectedCategories([...selectedCategories, category]);
+    }
   };
 
   return (

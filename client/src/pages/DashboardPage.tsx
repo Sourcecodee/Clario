@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useGrowth } from '../contexts/GrowthContext';
 import { Sparkles, Brain, Zap, Target, Trophy, Users, User, Star, ArrowUpRight, BookOpen, Flame, Target as TargetIcon, Check } from 'lucide-react';
 
 type Mood = 'energetic' | 'focused' | 'happy' | 'neutral' | 'low-energy' | 'reflective' | 'sad' | 'depressed';
@@ -31,12 +32,34 @@ const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState('dashboard'); // State to manage active tab
   const [currentMood, setCurrentMood] = useState<Mood>('neutral');
   const [greeting, setGreeting] = useState('');
-  // State to hold the selected growth areas
-  const [growthAreas, setGrowthAreas] = useState<GrowthArea[]>([
-    { name: 'Creativity', icon: Brain, progress: 60, color: 'text-purple-600' },
-    { name: 'Productivity', icon: Zap, progress: 75, color: 'text-blue-600' },
-    { name: 'Wisdom', icon: Brain, progress: 30, color: 'text-indigo-600' },
-  ]);
+
+  // Use selected categories from context
+  const { selectedCategories } = useGrowth();
+
+  // Map GrowthCategory to display info
+  const categoryMap: Record<string, { name: string; icon: React.ElementType; color: string }> = {
+    productivity: { name: 'Productivity', icon: Zap, color: 'text-blue-600' },
+    creativity: { name: 'Creativity', icon: Brain, color: 'text-purple-600' },
+    discipline: { name: 'Discipline', icon: Target, color: 'text-green-600' },
+    resilience: { name: 'Resilience', icon: Zap, color: 'text-purple-500' },
+    focus: { name: 'Wisdom', icon: Brain, color: 'text-indigo-600' },
+    empathy: { name: 'Empathy', icon: Brain, color: 'text-pink-600' },
+    leadership: { name: 'Leadership', icon: Brain, color: 'text-yellow-600' },
+    health: { name: 'Health', icon: Brain, color: 'text-red-600' },
+  };
+
+  const growthAreas = selectedCategories.length > 0
+    ? selectedCategories.map(cat => ({
+        name: categoryMap[cat]?.name || cat,
+        icon: categoryMap[cat]?.icon || Brain,
+        progress: Math.floor(Math.random() * 60) + 20, // Placeholder progress
+        color: categoryMap[cat]?.color || 'text-gray-600',
+      }))
+    : [
+        { name: 'Creativity', icon: Brain, progress: 60, color: 'text-purple-600' },
+        { name: 'Productivity', icon: Zap, progress: 75, color: 'text-blue-600' },
+        { name: 'Wisdom', icon: Brain, progress: 30, color: 'text-indigo-600' },
+      ];
 
   const moods = [
     { id: 'energetic' as Mood, label: 'Energetic', emoji: '⚡', icon: Zap },
@@ -623,13 +646,14 @@ const DashboardPage = () => {
                             </button>
                             <button
                               className={`flex-1 py-2 px-4 border rounded-lg font-medium transition-colors ${isCompleted(item.title)
-                                ? 'border-green-500 text-green-700 bg-green-50 cursor-not-allowed'
+                                ? 'border-green-500 text-green-700 bg-green-50'
                                 : 'border-gray-400 text-gray-700 hover:bg-gray-50'
                               }`}
                               onClick={() => handleMarkDone(item.title)}
-                              disabled={isCompleted(item.title)}
                             >
-                              {isCompleted(item.title) ? <Check className="w-5 h-5 inline-block mr-1" /> : 'Mark Done'}
+                              {isCompleted(item.title)
+                                ? (<><Check className="w-5 h-5 inline-block mr-1" /> Done (Untick)</>)
+                                : 'Mark Done'}
                             </button>
                           </div>
                         </div>
