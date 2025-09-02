@@ -29,11 +29,8 @@ const LandingPage = () => {
             <span className="text-2xl font-bold text-gray-900">Clario</span>
           </div>
           <div className="flex items-center space-x-4">
-            <button className="text-gray-600 hover:text-gray-900 transition-colors">
+            <button className="border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors">
               Login
-            </button>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-              Get Started
             </button>
           </div>
         </div>

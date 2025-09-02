@@ -33,6 +33,24 @@ interface GrowthArea {
 
 
 const DashboardPage = () => {
+  // State to track starred recommendations
+  const [starredRecommendations, setStarredRecommendations] = useState<Set<string>>(new Set());
+
+  // Toggle star state for a recommendation
+  const handleToggleStar = (itemTitle: string) => {
+    setStarredRecommendations(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(itemTitle)) {
+        newSet.delete(itemTitle);
+      } else {
+        newSet.add(itemTitle);
+      }
+      return newSet;
+    });
+  } 
+
+  // Check if a recommendation is starred
+  const isStarred = (itemTitle: string) => starredRecommendations.has(itemTitle);
   // State for active tab (dashboard, community, profile)
   const [activeTab, setActiveTab] = useState('dashboard');
   // State for current mood selection
@@ -632,7 +650,13 @@ const DashboardPage = () => {
                                 <p className="text-sm text-gray-600">{item.author}</p>
                               </div>
                             </div>
-                            <Star className="w-5 h-5 text-gray-400" />
+                            <button onClick={() => handleToggleStar(item.title)} aria-label="Toggle Star">
+                              {isStarred(item.title) ? (
+                                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                              ) : (
+                                <Star className="w-5 h-5 text-gray-400" />
+                              )}
+                            </button>
                           </div>
                           {/* Growth impact and mark done button */}
                           <div className={`p-3 rounded-lg mb-4 border-opacity-75 border ${
