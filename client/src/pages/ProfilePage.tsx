@@ -30,35 +30,37 @@ const ProfilePage = () => {
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8">
         {/* Profile Header: Avatar, name, and tagline */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 flex items-center justify-center mb-4">
-            <User className="w-16 h-16 text-white" />
+          <div className="flex items-center mb-4">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 flex items-center justify-center">
+              <User className="w-10 h-10 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 ml-3">{userName}</h2>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-1">{userName}</h2>
-          <p className="text-gray-500 text-lg flex items-center">
-            <Sparkles className="w-5 h-5 mr-1 text-purple-400" />
+          <div className="flex items-center text-gray-500 text-base mb-2">
+            <Sparkles className="w-4 h-4 mr-1 text-purple-400" />
             Growth Explorer
-          </p>
+          </div>
         </div>
 
         {/* Stats: Streak, completed, and growth points */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
           {/* Current streak card */}
-          <div className="bg-purple-50 rounded-xl p-6 flex flex-col items-center">
-            <Flame className="w-8 h-8 text-orange-500 mb-2" />
-            <div className="text-2xl font-bold text-gray-900">{streak} days</div>
-            <div className="text-gray-600">Current Streak</div>
+          <div className="bg-purple-50 rounded-lg p-4 flex flex-col items-center min-w-[100px]">
+            <Flame className="w-6 h-6 text-orange-500 mb-1" />
+            <div className="text-lg font-bold text-gray-900">{streak} days</div>
+            <div className="text-gray-600 text-xs">Current Streak</div>
           </div>
           {/* Completed recommendations card */}
-          <div className="bg-blue-50 rounded-xl p-6 flex flex-col items-center">
-            <CheckCircle className="w-8 h-8 text-green-500 mb-2" />
-            <div className="text-2xl font-bold text-gray-900">{totalCompleted}</div>
-            <div className="text-gray-600">Completed</div>
+          <div className="bg-blue-50 rounded-lg p-4 flex flex-col items-center min-w-[100px]">
+            <CheckCircle className="w-6 h-6 text-green-500 mb-1" />
+            <div className="text-lg font-bold text-gray-900">{totalCompleted}</div>
+            <div className="text-gray-600 text-xs">Completed</div>
           </div>
           {/* Growth points card */}
-          <div className="bg-yellow-50 rounded-xl p-6 flex flex-col items-center">
-            <Star className="w-8 h-8 text-yellow-500 mb-2" />
-            <div className="text-2xl font-bold text-gray-900">{growthPoints}</div>
-            <div className="text-gray-600">Growth Points</div>
+          <div className="bg-yellow-50 rounded-lg p-4 flex flex-col items-center min-w-[100px]">
+            <Star className="w-6 h-6 text-yellow-500 mb-1" />
+            <div className="text-lg font-bold text-gray-900">{growthPoints}</div>
+            <div className="text-gray-600 text-xs">Growth Points</div>
           </div>
         </div>
 

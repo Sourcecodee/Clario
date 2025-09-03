@@ -482,22 +482,20 @@ const DashboardPage = () => {
       {/* Header: App title and navigation */}
       <header className="bg-white shadow-sm border-b border-gray-300">
         <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex justify-between items-center">
-            {/* Logo and app name */}
-            <a href="/" className="flex items-center space-x-3 cursor-pointer" aria-label="Go to Home">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
-                <Brain className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-purple-600">Clario</h1>
-                <p className="text-sm text-gray-600 flex items-center">
-                  AI-Powered Growth Recommender
-                  <Sparkles className="w-3 h-3 ml-1" />
-                </p>
-              </div>
-            </a>
-            {/* Navigation Tabs: Dashboard, Community, Profile */}
-            <nav className="flex items-center space-x-6">
+            <div className="flex items-center w-full">
+              <a href="/" className="flex items-center space-x-2 cursor-pointer" aria-label="Go to Home">
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
+                  <Brain className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-purple-600">Clario</h1>
+                  <p className="text-xs text-gray-600 items-center hidden sm:flex">
+                    <span className="hidden sm:inline">AI-Powered Growth Recommender</span>
+                    <Sparkles className="w-3 h-3 ml-1" />
+                  </p>
+                </div>
+              </a>
+              <nav className="flex items-center space-x-2 justify-end ml-auto">
               <button
                 type="button"
                 onClick={() => setActiveTab('dashboard')}
@@ -551,12 +549,14 @@ const DashboardPage = () => {
                   <p className="text-gray-600 mb-4">
                     Focusing on:
                     <span className="inline-flex items-center ml-2 space-x-2">
-                      {growthAreas.map((area, index) => (
-                        <span key={index} className={`flex items-center ${area.color}`}>
-                          <area.icon className="w-4 h-4 mr-1" />
-                          {area.name}
-                        </span>
-                      ))}
+                      <span className="flex flex-row flex-wrap gap-2 max-w-full overflow-auto sm:overflow-visible">
+                        {growthAreas.map((area, index) => (
+                          <span key={index} className={`flex items-center ${area.color}`}>
+                            <area.icon className="w-4 h-4 mr-1" />
+                            {area.name}
+                          </span>
+                        ))}
+                      </span>
                     </span>
                   </p>
                 </div>

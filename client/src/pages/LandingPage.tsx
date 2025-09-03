@@ -1,4 +1,4 @@
-import { Sparkles, Brain, Target, TrendingUp, ArrowRight, Play } from 'lucide-react';
+import { Sparkles, Brain, Target, TrendingUp, ArrowRight} from 'lucide-react';
 
 const LandingPage = () => {
   const features = [
@@ -56,11 +56,11 @@ const LandingPage = () => {
               Discover AI-powered recommendations that enrich your life and accelerate your personal growth journey.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
-              <a href="/dashboard" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-base font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center max-w-xs mx-auto sm:px-8 sm:py-4 sm:text-lg">
+              <a href="/dashboard" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-base font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center max-w-xs mx-auto sm:max-w-none sm:mx-0 sm:px-8 sm:py-4 sm:text-lg">
                 View Dashboard
                 <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </a>
-              <a href="/onboarding" className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-base font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center max-w-xs mx-auto sm:px-8 sm:py-4 sm:text-lg">
+              <a href="/onboarding" className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-base font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center max-w-xs mx-auto sm:max-w-none sm:mx-0 sm:px-8 sm:py-4 sm:text-lg">
                 Start Your Journey
                 <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </a>
