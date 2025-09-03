@@ -24,13 +24,6 @@ type MoodRecommendations = {
   [key in Mood]: RecommendationItem[];
 };
 
-interface GrowthArea {
-  name: string;
-  icon: React.ElementType;
-  progress: number;
-  color: string;
-}
-
 
 const DashboardPage = () => {
   // State to track starred recommendations
@@ -491,7 +484,7 @@ const DashboardPage = () => {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             {/* Logo and app name */}
-            <div className="flex items-center space-x-3">
+            <a href="/" className="flex items-center space-x-3 cursor-pointer" aria-label="Go to Home">
               <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
                 <Brain className="w-6 h-6 text-white" />
               </div>
@@ -502,7 +495,7 @@ const DashboardPage = () => {
                   <Sparkles className="w-3 h-3 ml-1" />
                 </p>
               </div>
-            </div>
+            </a>
             {/* Navigation Tabs: Dashboard, Community, Profile */}
             <nav className="flex items-center space-x-6">
               <button
@@ -510,24 +503,24 @@ const DashboardPage = () => {
                 onClick={() => setActiveTab('dashboard')}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors border ${activeTab === 'dashboard' ? 'bg-purple-100 text-purple-700 font-medium border-purple-400' : 'border-transparent text-gray-600 hover:text-purple-600 hover:bg-gray-100 hover:border-gray-300'}`}
               >
-                <Target className="w-4 h-4" />
-                <span>Dashboard</span>
+                <Target className="w-5 h-5" />
+                <span className="hidden sm:inline">Dashboard</span>
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab('community')}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors border ${activeTab === 'community' ? 'bg-purple-100 text-purple-700 font-medium border-purple-400' : 'border-transparent text-gray-600 hover:text-purple-600 hover:bg-gray-100 hover:border-gray-300'}`}
               >
-                <Users className="w-4 h-4" />
-                <span>Community</span>
+                <Users className="w-5 h-5" />
+                <span className="hidden sm:inline">Community</span>
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab('profile')}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors border ${activeTab === 'profile' ? 'bg-purple-100 text-purple-700 font-medium border-purple-400' : 'border-transparent text-gray-600 hover:text-purple-600 hover:bg-gray-100 hover:border-gray-300'}`}
               >
-                <User className="w-4 h-4" />
-                <span>Profile</span>
+                <User className="w-5 h-5" />
+                <span className="hidden sm:inline">Profile</span>
               </button>
             </nav>
             {/* Mobile menu button (optional) */}

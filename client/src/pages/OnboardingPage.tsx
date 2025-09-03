@@ -83,11 +83,13 @@ const OnboardingPage = () => {
       <div className="text-center py-12 px-6">
         <div className="flex items-center justify-center space-x-2 mb-6">
           {/* App logo and title */}
-          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
-            <Brain className="w-5 h-5 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900">Welcome to Clario</h1>
-          <Sparkles className="w-5 h-5 text-purple-500" />
+          <a href="/" className="flex items-center space-x-2 cursor-pointer" aria-label="Go to Home">
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
+              <Brain className="w-5 h-5 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900">Welcome to Clario</h1>
+            <Sparkles className="w-5 h-5 text-purple-500" />
+          </a>
         </div>
         {/* Subtitle and encouragement */}
         <div className="flex items-center justify-center space-x-2 text-gray-600 mb-8">
